@@ -5,7 +5,7 @@ Backend (express-server):
   npm install
 
 Frontend (react-client):
-  cd ../react-client
+  cd react-client
   npm install
 
 Open in Browser : http://localhost:3000
