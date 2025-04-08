@@ -11,7 +11,7 @@ pipeline {
     stage('Install Frontend Dependencies') {
       steps {
         dir('react-client') {
-          sh 'npm install'
+          bat 'npm install'
         }
       }
     }
@@ -19,7 +19,7 @@ pipeline {
     stage('Build React App') {
       steps {
         dir('react-client') {
-          sh 'npm run build'
+          bat 'npm run build'
         }
       }
     }
@@ -27,7 +27,7 @@ pipeline {
     stage('Install Backend Dependencies') {
       steps {
         dir('express-server') {
-          sh 'npm install'
+          bat 'npm install'
         }
       }
     }
