@@ -3,9 +3,10 @@ import axios from "axios";
 
 const GroceryDashboard = ({ userFirstName }) => {
   const [items, setItems] = useState([]);
-  const [newItem, setNewItem] = useState({ name: "", quantity: 1 });
+  const [newItem, setNewItem] = useState({ name: "", quantity: 1, category: "" });
   const [editId, setEditId] = useState(null);
-  const [editValues, setEditValues] = useState({ name: "", quantity: 1 });
+  const [editValues, setEditValues] = useState({ name: "", quantity: 1, category: "" });
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
     fetchItems();
@@ -31,7 +32,7 @@ const GroceryDashboard = ({ userFirstName }) => {
         withCredentials: true,
       });
       setItems([...items, res.data]);
-      setNewItem({ name: "", quantity: 1 });
+      setNewItem({ name: "", quantity: 1, category: "" });
     } catch (err) {
       console.error("Failed to add item:", err.message);
     }
@@ -65,12 +66,12 @@ const GroceryDashboard = ({ userFirstName }) => {
 
   const startEdit = (item) => {
     setEditId(item._id);
-    setEditValues({ name: item.name, quantity: item.quantity });
+    setEditValues({ name: item.name, quantity: item.quantity, category: item.category || "" });
   };
 
   const cancelEdit = () => {
     setEditId(null);
-    setEditValues({ name: "", quantity: 1 });
+    setEditValues({ name: "", quantity: 1, category: "" });
   };
 
   const saveEdit = async (itemId) => {
@@ -87,14 +88,35 @@ const GroceryDashboard = ({ userFirstName }) => {
     }
   };
 
+  const categories = ["All", "Fruits", "Vegetables", "Dairy", "Bakery", "Snacks", "Other"];
+  const filteredItems = selectedCategory === "All"
+    ? items
+    : items.filter(item => item.category === selectedCategory);
+
   return (
     <div className="container mt-4">
       <h3>Hi, {userFirstName}! 🛒 Your Grocery List</h3>
 
+      {/* Filter Dropdown */}
+      <div className="mb-3">
+        <label className="form-label me-2">Filter by category:</label>
+        <select
+          className="form-select w-auto d-inline"
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {/* Add Item Form */}
       <form onSubmit={handleAddItem} className="mb-4">
         <div className="row">
-          <div className="col-md-6">
+          <div className="col-md-4">
             <input
               type="text"
               className="form-control"
@@ -104,7 +126,7 @@ const GroceryDashboard = ({ userFirstName }) => {
               required
             />
           </div>
-          <div className="col-md-4">
+          <div className="col-md-2">
             <input
               type="number"
               className="form-control"
@@ -115,6 +137,23 @@ const GroceryDashboard = ({ userFirstName }) => {
               }
               required
             />
+          </div>
+          <div className="col-md-4">
+            <select
+              className="form-select"
+              value={newItem.category}
+              onChange={(e) =>
+                setNewItem({ ...newItem, category: e.target.value })
+              }
+              required
+            >
+              <option value="">Select category</option>
+              {categories.slice(1).map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="col-md-2">
             <button className="btn btn-primary w-100" type="submit">
@@ -131,11 +170,12 @@ const GroceryDashboard = ({ userFirstName }) => {
             <th></th>
             <th>Item</th>
             <th>Quantity</th>
+            <th>Category</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {items.map((item) => (
+          {filteredItems.map((item) => (
             <tr key={item._id}>
               <td>
                 <input
@@ -185,6 +225,27 @@ const GroceryDashboard = ({ userFirstName }) => {
               </td>
               <td>
                 {editId === item._id ? (
+                  <select
+                    className="form-select"
+                    value={editValues.category}
+                    onChange={(e) =>
+                      setEditValues({ ...editValues, category: e.target.value })
+                    }
+                    required
+                  >
+                    <option value="">Select category</option>
+                    {categories.slice(1).map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <span>{item.category || "Other"}</span>
+                )}
+              </td>
+              <td>
+                {editId === item._id ? (
                   <>
                     <button
                       className="btn btn-sm btn-success me-2"
@@ -222,4 +283,3 @@ const GroceryDashboard = ({ userFirstName }) => {
 };
 
 export default GroceryDashboard;
-
