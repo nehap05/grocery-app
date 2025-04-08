@@ -89,7 +89,7 @@ const GroceryDashboard = ({ userFirstName }) => {
 
   return (
     <div className="container mt-4">
-      <h3>Hi, {userFirstName}! 🛒 Your Grocery List</h3>
+      <h3>Hi, {userFirstName}! 🛒 Your Grocery List – Check items when bought ✅</h3>
 
       {/* Add Item Form */}
       <form onSubmit={handleAddItem} className="mb-4">
@@ -222,4 +222,3 @@ const GroceryDashboard = ({ userFirstName }) => {
 };
 
 export default GroceryDashboard;
-
