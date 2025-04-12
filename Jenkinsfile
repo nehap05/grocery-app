@@ -2,14 +2,20 @@ pipeline {
   agent any
 
   tools {
-    nodejs "node18"  // Ensure NodeJS tool is set in Jenkins Global Tool Config
+    nodejs "node18"
   }
 
-  triggers {
-    pollSCM('* * * * *')  // Poll every minute (for demo)
+  environment {
+    CI = 'true'
   }
 
   stages {
+    stage('Install Compatible npm') {
+      steps {
+        bat 'npm install -g npm@9.8.1'
+      }
+    }
+
     stage('Checkout Code') {
       steps {
         git url: 'https://github.com/nehap05/grocery-app.git', branch: 'main'
@@ -42,53 +48,44 @@ pipeline {
 
     stage('Static Code Analysis (Mock SonarQube)') {
       steps {
-        echo 'Running static code analysis (SonarQube)...'
+        echo '🔍 Running static analysis... (mock)'
       }
     }
 
     stage('Run Tests (Mock with Coverage)') {
       steps {
-        echo 'Running unit tests and generating coverage report (mock)...'
+        echo '✅ Running unit tests... (mock)'
       }
     }
 
     stage('Deliver Artifact') {
       steps {
-        echo 'Delivering artifact (mock)...'
+        echo '📦 Delivering artifact... (mock)'
       }
     }
 
     stage('Deploy to Dev') {
       steps {
-        echo '✅ Deploying to Dev environment (mock)...'
+        echo '🚀 Deploying to Dev environment... (mock)'
       }
     }
 
     stage('Deploy to QA') {
       steps {
-        echo '✅ Deploying to QA environment (mock)...'
+        echo '🚀 Deploying to QA environment... (mock)'
       }
     }
 
     stage('Deploy to Staging') {
       steps {
-        echo '✅ Deploying to Staging environment (mock)...'
+        echo '🚀 Deploying to Staging environment... (mock)'
       }
     }
 
     stage('Deploy to Production') {
       steps {
-        echo '✅ Deploying to Production environment (mock)...'
+        echo '🚀 Deploying to Production environment... (mock)'
       }
-    }
-  }
-
-  post {
-    success {
-      echo '✅ Build and deployment completed successfully!'
-    }
-    failure {
-      echo '❌ Build failed. Check logs for details.'
     }
   }
 }
